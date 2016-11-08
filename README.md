@@ -91,7 +91,7 @@ it 'should create payment with physical and virtual item for listing or subscrip
         price: '0.2',
     }
     request = {
-        locale: 'tr',
+        locale: Iyzipay::Model::Locale::TR,
         conversationId: '123456789',
         price: '1.0',
         paidPrice: '1.1',

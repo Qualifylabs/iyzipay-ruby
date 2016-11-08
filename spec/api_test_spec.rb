@@ -10,18 +10,10 @@ RSpec.describe 'Iyzipay' do
     @options.base_url = 'https://sandbox-api.iyzipay.com'
   end
 
-  it 'should post auth' do
-    request = {
-        locale: 'tr',
-        conversationId: '123456789',
-        paymentId: '258',
-        paidPrice: '1',
-        ip: '85.34.78.112',
-        currency: Iyzipay::Model::Currency::TRY,
-    }
-    payment = Iyzipay::Model::PaymentPostAuth.new.create(request, @options)
+  it 'should test api' do
+    apiTest = Iyzipay::Model::ApiTest.new.retrieve(@options)
     begin
-      $stderr.puts payment.inspect
+      $stderr.puts apiTest.inspect
     rescue
       $stderr.puts 'oops'
       raise

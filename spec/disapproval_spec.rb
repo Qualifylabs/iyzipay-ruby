@@ -10,18 +10,15 @@ RSpec.describe 'Iyzipay' do
     @options.base_url = 'https://sandbox-api.iyzipay.com'
   end
 
-  it 'should post auth' do
+  it 'should disapprove payment item' do
     request = {
-        locale: 'tr',
+        locale: Iyzipay::Model::Locale::TR,
         conversationId: '123456789',
-        paymentId: '252',
-        paidPrice: '1',
-        ip: '85.34.78.112',
-        currency: Iyzipay::Model::Currency::TRY
+        paymentTransactionId: '1'
     }
-    payment = Iyzipay::Model::BasicPaymentPostAuth.new.create(request, @options)
+    disapproval = Iyzipay::Model::Disapproval.new.create(request, @options)
     begin
-      $stderr.puts payment.inspect
+      $stderr.puts disapproval.inspect
     rescue
       $stderr.puts 'oops'
       raise

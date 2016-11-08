@@ -10,7 +10,7 @@ RSpec.describe 'Iyzipay' do
     @options.base_url = 'https://sandbox-api.iyzipay.com'
   end
 
-  it 'should initialize checkout form' do
+  it 'should initialize pecco' do
     buyer = {
         id: 'BY789',
         name: 'John',
@@ -40,9 +40,7 @@ RSpec.describe 'Iyzipay' do
         category1: 'Collectibles',
         category2: 'Accessories',
         itemType: Iyzipay::Model::BasketItemType::PHYSICAL,
-        price: '0.3',
-        subMerchantKey: 'sub merchant key',
-        subMerchantPrice: '0.27'
+        price: '30000',
     }
     item2 = {
         id: 'BI102',
@@ -50,9 +48,7 @@ RSpec.describe 'Iyzipay' do
         category1: 'Game',
         category2: 'Online Game Items',
         itemType: Iyzipay::Model::BasketItemType::VIRTUAL,
-        price: '0.5',
-        subMerchantKey: 'sub merchant key',
-        subMerchantPrice: '0.42'
+        price: '50000',
     }
     item3 = {
         id: 'BI103',
@@ -60,28 +56,44 @@ RSpec.describe 'Iyzipay' do
         category1: 'Electronics',
         category2: 'Usb / Cable',
         itemType: Iyzipay::Model::BasketItemType::PHYSICAL,
-        price: '0.2',
-        subMerchantKey: 'sub merchant key',
-        subMerchantPrice: '0.18'
+        price: '20000',
     }
     request = {
-        locale: 'tr',
+        locale: Iyzipay::Model::Locale::TR,
         conversationId: '123456789',
-        price: '1.0',
-        paidPrice: '1.0',
+        price: '100000',
+        paidPrice: '120000',
         basketId: 'B67832',
-        paymentGroup: Iyzipay::Model::PaymentGroup::PRODUCT,
+        paymentGroup: Iyzipay::Model::PaymentGroup::LISTING,
         callbackUrl: 'https://www.merchant.com/callback',
-        enabledInstallments: [2,3,6,9],
+        currency: Iyzipay::Model::Currency::IRR,
         buyer: buyer,
         billingAddress: address,
         shippingAddress: address,
         basketItems: [item1, item2, item3]
     }
-    checkout_form_initialize = Iyzipay::Model::CheckoutFormInitializePreAuth.new.create(request, @options)
-
+    pecco_initialize = Iyzipay::Model::PeccoInitialize.new.create(request, @options)
     begin
-      $stderr.puts checkout_form_initialize.inspect
+      $stderr.puts pecco_initialize.inspect
+      threeds_initialize_dict = JSON.parse(pecco_initialize)
+      unless threeds_initialize_dict['htmlContent'].nil?
+        $stderr.puts Base64.decode64(threeds_initialize_dict['htmlContent']).inspect
+      end
+    rescue
+      $stderr.puts 'oops'
+      raise
+    end
+  end
+
+  it 'should create pecco payment' do
+    request = {
+        locale: Iyzipay::Model::Locale::TR,
+        conversationId: '123456789',
+        token: 'token',
+    }
+    threeds_payment = Iyzipay::Model::PeccoPayment.new.create(request, @options)
+    begin
+      $stderr.puts threeds_payment.inspect
     rescue
       $stderr.puts 'oops'
       raise
