@@ -1,3 +1,3 @@
 module Iyzipay
-  VERSION = IO.read("VERSION")
+  VERSION = '1.0.34'
 end
